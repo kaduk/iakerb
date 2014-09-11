@@ -511,11 +511,13 @@ pnp          The gss-mic field in the KRB-FINISHED structure contains a Kerberos
         <t>
           Initiators behave as follows:
           <list style="symbols">
-            <t>If the acceptor token is framed, then use the protocol as defined above.</t>
+            <t>If the first acceptor token begins with generic token framing
+              as described in section 3.1 of <xref target="RFC2743" />, then
+              use the protocol as defined in this document.</t>
             <t>
-              Else
+              If the first acceptor token is missing the generic token framing
+              (i.e., the token begins with the two-byte token ID 05 01), then
               <list style="symbols">
-                <t>All future tokens sent to the acceptor are to be unframed.</t>
                 <t>When creating the finish message, the value of one (1) should be used in place of GSS_EXTS_FINISHED.</t>
                 <t>When computing the checksum, the value of KEY_USAGE_IAKERB_FINISHED should be used in place of KEY_USAGE_FINISHED.</t>
               </list>
@@ -532,8 +534,15 @@ pnp          The gss-mic field in the KRB-FINISHED structure contains a Kerberos
         <t>
           Acceptors behave as follows:
           <list style="symbols">
-            <t>If you framed the response token, use the finish extension processing defined in the main document.</t>
-            <t>If you did not frame the response token, use the finish extension processing defined in the previous paragraph.</t>
+            <t>After the first initiator token, allow initiator tokens to
+              omit generic token framing.  This allowance is required only
+              for IAKERB_PROXY messages (those using token ID 05 01), not
+              for tokens defined in <xref target="RFC4121" />.</t>
+            <t>If the AP-REQ authenticator contains an extension of type 1
+              containing a KRB-FINISHED message, then process the extension
+              as if it were of type GSS_EXTS_FINISHED, except with a key usage
+              of KEY_USAGE_IAKERB_FINISHED (42) instead of
+              KEY_USAGE_FINISHED (41).</t>
           </list>
         </t>
 
