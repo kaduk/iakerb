@@ -124,7 +124,10 @@
         <t>
           Building upon these Kerberos extensions, this document extends <xref target="RFC4120"/> and 
           <xref target="RFC4121"/> such that the client can communicate with the KDC using a Generic Security Service
-          Application Program Interface (GSS-API) <xref target="RFC2743"/> acceptor as the proxy. The GSS-API acceptor relays
+          Application Program Interface (GSS-API)
+          <xref target="RFC2743"/> acceptor as a message-passing proxy.
+          (This is completely unrelated to the type of proxy specified
+          in <xref target="RFC4120" />.)  The GSS-API acceptor relays
           the KDC request and reply messages between the client and the KDC.
 
           The GSS-API acceptor, when relaying the Kerberos messages, is called an IAKERB proxy.
