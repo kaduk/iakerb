@@ -41,6 +41,13 @@
 
   <front>
     <title abbrev="IAKERB">Initial and Pass Through Authentication Using Kerberos V5 and the GSS-API (IAKERB)</title>
+    <author initials="B." surname="Kaduk" fullname="Benjamin Kaduk" role="editor">
+      <organization>MIT KIT</organization>
+      <address>
+        <email>kaduk@mit.edu</email>
+      </address>
+    </author>
+
     <author initials="J." surname="Schaad" fullname="Jim Schaad" role="editor">
       <organization>Soaring Hawk Consulting</organization>
       <address>
