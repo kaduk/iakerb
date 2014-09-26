@@ -333,9 +333,12 @@
 
       <section title="Finish Message" anchor="FinishMessage">
         <t>
-          For implementations conforming to this specification, the authenticator subkey in the AP-REQ MUST alway be present, 
-          and the Exts field in the GSS-API authenticator [RFC6542] MUST contain an extension of the type GSS_EXTS_IAKERB_FINISHED 
-          and the extension data contains the ASN.1 DER encoding of the structure IAKERB-FINISHED. 
+          For implementations conforming to this specification, the
+          authenticator subkey in the AP-REQ MUST alway be present,
+          and the Exts field in the GSS-API authenticator [RFC6542]
+          MUST contain an extension of the type GSS_EXTS_FINISHED
+          and the extension data contains the ASN.1 DER encoding of the
+          structure KRB-FINISHED.
         </t>
 
         <figure>
