@@ -401,12 +401,23 @@
       <section anchor="securityconsideration" title="Security Considerations" toc="default">
 
         <t>
-          A typical IAKERB client sends the AS_REQ with pre-authentication data
-          encrypted in the long-term keys of the user before the server is authenticated. This enables offline
-          attacks by un-trusted servers. To mitigate this threat, the
-          client SHOULD use Kerberos FAST<xref target="RFC6113"/> and require KDC authentication to protect
-          the user's credentials.
+          The IAKERB proxy is a man-in-the-middle for the IAKERB client's
+          Kerberos exchanges.  The Kerberos protocol is designed to be
+          used over an untrusted network, so this is not a critical flaw,
+          but it does expose to the IAKERB proxy all information sent in
+          cleartext over those exchanges, such as the principal names in
+          requests.  Since the typical usage involves the client obtaining
+          a service ticket for the service operating the proxy, which will
+          receive the client principal as part of normal authentication,
+          this is also not a serious concern.  However, a typical IAKERB
+          client sends an AS_REQ with pre-authentication data encrypted
+          in the long-term keys of the user, even before the server is
+          authenticated.  This subjects the user's long-term key to an
+          offline attack by the proxy.  To mitigate this threat, the
+          client SHOULD use Kerberos FAST<xref target="RFC6113"/> and
+          require KDC authentication to protect the user's credentials.
         </t>
+
 
         <t>
           The client name is in clear text in the authentication exchange
