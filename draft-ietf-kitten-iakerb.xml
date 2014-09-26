@@ -97,14 +97,19 @@
 
         <t>
           When authenticating using Kerberos V5, clients obtain tickets from a
-          KDC and present them to services. This model of operation cannot work if the client does not have
+          KDC and present them to services. This model of operation cannot
+          work if the client does not have
           access to the KDC. For example, in remote access scenarios, 
           the client must initially authenticate to an access point in
           order to gain full access to the network. Here the client may be
           unable to directly contact the KDC either because it does not have an
           IP address, or the access point packet filter does not allow the
           client to send packets to the Internet before it authenticates to the
-          access point.
+          access point.  IAKERB allows for the use of Kerberos in such
+          scenarios where the client is unable to directly contact the KDC,
+          by using the service to pass messages between the client and the
+          KDC.  This allows the client to obtain tickts from the KDC and
+          present them to the service, as in normal Kerberos operation.
         </t>
 
         <t>
