@@ -545,7 +545,9 @@
 
       <section title="Interoperate with Previous MIT version" anchor="MITVersion">
         <t>
-          MIT implemented an early draft version of this document, this section gives a method for detecting and interoperating with that version.
+          MIT implemented an early draft version of this document.  This
+          section gives a method for detecting and interoperating with
+          that version.
         </t>
 
         <t>
