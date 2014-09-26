@@ -359,9 +359,16 @@
         </figure>
 
         <t>
-pnp          The gss-mic field in the KRB-FINISHED structure contains a Kerberos checksum <xref target="RFC3961"/> of all the preceding context tokens of this GSS-API
-          context (including the InitialContextToken header), concatenated in chronological order (note that GSS-API context token exchanges are synchronous.)
-          The checksum type is the required checksum type of the enctype of the subkey in the authenticator, the protocol key for the checksum operation is the authenticator subkey, and the key usage number is KEY_USAGE_FINISHED.
+          The gss-mic field in the KRB-FINISHED structure contains a Kerberos
+          checksum <xref target="RFC3961"/> of all the preceding context
+          tokens of this GSS-API
+          context (including the InitialContextToken header), concatenated
+          in chronological order (note that GSS-API context token
+          exchanges are synchronous).
+          The checksum type is the required checksum type of the enctype of
+          the subkey in the authenticator, the protocol key for the checksum
+          operation is the authenticator subkey, and the key usage number
+          is KEY_USAGE_FINISHED.
         </t>
 
         <figure>
