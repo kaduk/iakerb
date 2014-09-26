@@ -166,7 +166,7 @@
         <t>
           All context establishment token of IAKERB MUST have the generic token framing described in section 3.1 of
           <xref target="RFC2743"/> with the mechanism OID being id-kerberos-iakerb.
-          MIT implemented an earlier draft of this specification, details on how to inter operate with that implementation can be found in <xref target="MITVersion"/>.
+          MIT implemented an earlier draft of this specification; details on how to inter operate with that implementation can be found in <xref target="MITVersion"/>.
         </t>
 
         <t>
