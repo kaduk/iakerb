@@ -440,6 +440,17 @@
         </t>
 
         <t>
+          In the intended use scenario, the client uses the proxy to obtain
+          a TGT and then a service ticket for the service it is authenticating
+          to (possibly preceeded by exchanges to produce FAST armor).
+          However, the protocol allows arbitrary KDC-REQs to be passed
+          through, and there is no limit to the number of exchanges that may
+          be proxied.  The client can send KDC-REQs unrelated to the
+          current authentication, and obtain service tickets for other
+          service principals in the database of the KDC being contacted.
+        </t>
+
+        <t>
           In a scenario where DNS SRV RR's are being used to locate the
           KDC, IAKERB is being used, and an external attacker can modify DNS
           responses to the IAKERB proxy, there are several countermeasures to
