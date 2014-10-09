@@ -249,9 +249,15 @@
           The client MUST specify a target-realm.  If the client does not
           know the realm of the client's true principal name <xref target="RFC6806"/>, it MUST specify a realm it knows.  This can be the realm of the client's host.
           <!--
-              The GSS-API client can retrieve the default  realm of the GSS-API server by sending an IAKERB message with an empty target-realm in the IAKERB-HEADER 
-              and no Kerberos message following the IAKERB-HEADER struture. The GSS-API server fills out the traget realm field using the default realm (which could be the realm of the server host),
-              and sends back the IAKERB message with no Kerberos message following the header. The GSS-API client can use the returned realm in subsequent IAKERB messages. -->
+              The GSS-API initiator can retrieve the default realm of the
+              GSS-API acceptor by sending an IAKERB message with an empty
+              target-realm in the IAKERB-HEADER
+              and no Kerberos message following the IAKERB-HEADER struture.
+              The GSS-API acceptor fills out the traget realm field using the
+              default realm (which could be the realm of the server host),
+              and sends back the IAKERB message with no Kerberos message
+              following the header. The GSS-API initiator can use the
+              returned realm in subsequent IAKERB messages. -->
 
         </t>
 
@@ -260,7 +266,7 @@
           the GSS-API acceptor inspects the target-realm field in the IAKERB_HEADER, and locates a KDC of that realm, and sends the ticket request to that KDC. 
         </t>
         <t>
-          The GSS-API server encapsulates
+          The GSS-API acceptor encapsulates
           the KDC reply message in the returned IAKERB message. It fills out the target realm using the realm sent by the client and the KDC reply message is included
           immediately following the IAKERB-HEADER header.
         </t> 
@@ -310,7 +316,23 @@
 
         <t>
 
-          When obtaining the initial TGT, the client may start with an NT-ENTERPRISE name type and the client host does not have a Kerberos realm. To resolve the NT-ENTERPRISE name type, the client typically starts with the client host realm and then finds out the true realm of the client based on <xref target="RFC6806"/>. In this case the GSS-API client can retrieve the realm of the GSS-API server as follows: the client returns GSS_S_CONTINUE_NEEDED with the output token containing an IAKERB message with an empty target-realm in the IAKERB-HEADER and no Kerberos message following the IAKERB-HEADER structure. Upon receipt of the realm request, the GSS-API server fills out the target realm field using the realm of the server, and returns GSS_S_CONTINUE_NEEDED with the output token containing the IAKERB message with the server's realm and no Kerberos message following the IAKERB-HEADER header. The GSS-API client can then use the returned realm in subsequent IAKERB messages to resolve the NT-ENTERPRISE name type. Since the GSS-API server can act as a Kerberos acceptor, it always has a Kerberos realm in this case.
+          When obtaining the initial TGT, the client may start with an
+          NT-ENTERPRISE name type and the client host does not have a Kerberos
+          realm. To resolve the NT-ENTERPRISE name type, the client typically
+          starts with the client host realm and then finds out the true realm
+          of the client based on <xref target="RFC6806"/>. In this case the
+          GSS-API initiator can retrieve the realm of the GSS-API acceptor as
+          follows: the client returns GSS_S_CONTINUE_NEEDED with the output
+          token containing an IAKERB message with an empty target-realm in the
+          IAKERB-HEADER and no Kerberos message following the IAKERB-HEADER
+          structure. Upon receipt of the realm request, the GSS-API acceptor
+          fills out the target realm field using the realm of the server, and
+          returns GSS_S_CONTINUE_NEEDED with the output token containing the
+          IAKERB message with the server's realm and no Kerberos message
+          following the IAKERB-HEADER header. The GSS-API initiator can then use
+          the returned realm in subsequent IAKERB messages to resolve the
+          NT-ENTERPRISE name type. Since the GSS-API acceptor can act as a
+          Kerberos acceptor, it always has a Kerberos realm in this case.
 
         </t>
 
