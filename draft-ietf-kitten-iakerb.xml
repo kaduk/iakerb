@@ -192,9 +192,9 @@
         </figure>
 
         <t>
-          All context establishment token of IAKERB MUST have the
-          generic token framing described in section 3.1 of
-          <xref target="RFC2743"/> with the mechanism OID being
+          All context establishment tokens of IAKERB MUST have the
+          token framing described in section 4.1 of
+          <xref target="RFC4121"/> with the mechanism OID being
           id-kerberos-iakerb.  MIT implemented an earlier draft of
           this specification; details on how to inter operate with
           that implementation can be found in
@@ -202,9 +202,9 @@
         </t>
 
         <t>
-          The client starts by constructing the ticket request, and if
-          the ticket request is being made to the KDC, the client,
-          instead of contacting the KDC directly, encapsulates the
+          The client starts by constructing a ticket request, as if
+          it is being made directly to the KDC.  Instead of contacting
+          the KDC directly, the client encapsulates the
           request message into the output token of the
           GSS_Init_security_context() call and returns
           GSS_S_CONTINUE_NEEDED <xref target="RFC2743"/> indicating
@@ -225,13 +225,17 @@
 
         <figure>
           <artwork>
-            Client &lt;---------&gt; IAKERB proxy &lt;---------&gt; KDC
+      +--------+           +--------------+           +-----+
+      |        | --------&gt;                  --------&gt; |     |
+      | Client |           | IAKERB proxy |           | KDC |
+      |        | &lt;--------                  &lt;-------- |     |
+      +--------+           +--------------+           +-----+
           </artwork>
         </figure>
 
         <t>
           The innerToken described in section 3.1 of
-          <xref target="RFC2743"/> and subsequent GSS-API mechanism
+          <xref target="RFC4121"/> and subsequent GSS-API mechanism
           tokens have the following formats: it starts with a
           two-octet token-identifier (TOK_ID), followed by an IAKERB
           message or a Kerberos message.
@@ -256,7 +260,8 @@
         <t>
           The content of the IAKERB_PROXY message is defined as an
           IAKERB-HEADER structure immediately followed by a Kerberos
-          message.  The Kerberos message can be an AS-REQ, an AS-REP,
+          message, which is optional.
+          The Kerberos message can be an AS-REQ, an AS-REP,
           a TGS-REQ, a TGS-REP, or a KRB-ERROR as defined in
           <xref target="RFC4120"/>.
         </t>
@@ -323,7 +328,8 @@
           When the GSS-API acceptor is unable to obtain an IP address
           for a KDC in the client's realm, it sends a KRB_ERROR
           message with the code KRB_AP_ERR_IAKERB_KDC_NOT_FOUND to the
-          client and the context fails to establish. There is no
+          client in place of an actual reply from the KDC,
+          and the context fails to establish. There is no
           accompanying error data defined in this document for this
           error code.
         </t>
@@ -374,11 +380,13 @@
 
         <t>
           When obtaining the initial TGT, the client may start with an
-          NT-ENTERPRISE name type and the client host does not have a
-          Kerberos realm. To resolve the NT-ENTERPRISE name type, the
-          client typically starts with the client host realm and then
-          finds out the true realm of the client based on
-          <xref target="RFC6806"/>. In this case the GSS-API initiator
+          NT-ENTERPRISE name type and no Kerberos realm information.
+          A Kerberos client not using IAKERB would typically resolve
+          the NT-ENTERPRISE name to a principal name by starting from
+          the realm of the client's host and finding out the true
+          realm of the enterprise principal based on referrals
+          <xref target="RFC6806"/>.  When the client does not have any
+          realm information, it
           can retrieve the realm of the GSS-API acceptor as follows:
           the client returns GSS_S_CONTINUE_NEEDED with the output
           token containing an IAKERB message with an empty
@@ -396,8 +404,9 @@
         </t>
 
         <t>
-          When the client obtained a service ticket, the client sends
-          a KRB_AP_REQ message to the server, and performs the
+          When the client obtained a service ticket, subsequent
+          GSS-API context tokens are of type KRB_AP_REQ, not
+          IAKERB_PROXY, and the client performs the
           client-server application exchange as defined in
           <xref target="RFC4120"/> and <xref target="RFC4121"/>.
         </t>
@@ -416,7 +425,7 @@
         <t>
           If the pre-authentication data is encrypted in the long-term
           password-based key of the principal, the risk of security
-          exposures is significant. Implementations SHOULD provide the
+          exposures is significant. Implementations SHOULD utilize the
           AS_REQ armoring as defined in <xref target="RFC6113"/>
           unless an alternative protection is deployed.  In addition,
           the anonymous Kerberos FAST option is RECOMMENDED for the
@@ -537,8 +546,8 @@
           Similar to other network access protocols, IAKERB allows an
           unauthenticated client (possibly outside the security
           perimeter of an organization) to send messages that are
-          proxied to interior servers.  To reduce attack surface,
-          firewall filters can be applied to allow from which hosts
+          proxied to interior servers.  To reduce the attack surface,
+          firewall filters can be applied to restrict from which hosts
           the client requests can be proxied and the proxy can further
           restrict the set of realms to which the requests can be
           proxied.
