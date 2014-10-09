@@ -185,9 +185,9 @@
 
         <figure>
           <artwork>
-            id-kerberos-iakerb ::= 
-            { iso(1) org(3) dod(6) internet(1) security(5) kerberosV5(2) 
-            iakerb(5) } 
+       id-kerberos-iakerb ::=
+       { iso(1) org(3) dod(6) internet(1) security(5) kerberosV5(2)
+       iakerb(5) }
           </artwork>
         </figure>
 
@@ -438,7 +438,8 @@
         <t>
           For implementations conforming to this specification, the
           authenticator subkey in the AP-REQ MUST alway be present,
-          and the Exts field in the GSS-API authenticator [RFC6542]
+          and the Exts field in the GSS-API authenticator
+          <xref target="RFC6542"/>
           MUST contain an extension of the type GSS_EXTS_FINISHED and
           the extension data contains the ASN.1 DER encoding of the
           structure KRB-FINISHED.
