@@ -134,8 +134,11 @@
           Application Program Interface (GSS-API)
           <xref target="RFC2743"/> acceptor as a message-passing proxy.
           (This is completely unrelated to the type of proxy specified
-          in <xref target="RFC4120" />.)  The GSS-API acceptor relays
-          the KDC request and reply messages between the client and the KDC.
+          in <xref target="RFC4120" />.)  The client acts as a GSS-API
+          initiator, and the GSS-API acceptor relays
+          the KDC request and reply messages between the client and the KDC,
+          transitioning to normal <xref target="RFC4121" /> GSS-krb5
+          messages once the client has obtained the necessary credentials.
 
           The GSS-API acceptor, when relaying the Kerberos messages, is called an IAKERB proxy.
 
@@ -241,7 +244,7 @@
         </t>
 
         <t>
-          The IAKERB client fills out the IAKERB-HEADER structure as follows: 
+          The client fills out the IAKERB-HEADER structure as follows:
           the target-realm contains the realm name the ticket request is addressed to. In the initial message from the client, the cookie field is absent.
           The client MUST specify a target-realm.  If the client does not
           know the realm of the client's true principal name <xref target="RFC6806"/>, it MUST specify a realm it knows.  This can be the realm of the client's host.
@@ -408,7 +411,7 @@
       <section anchor="securityconsideration" title="Security Considerations" toc="default">
 
         <t>
-          The IAKERB proxy is a man-in-the-middle for the IAKERB client's
+          The IAKERB proxy is a man-in-the-middle for the client's
           Kerberos exchanges.  The Kerberos protocol is designed to be
           used over an untrusted network, so this is not a critical flaw,
           but it does expose to the IAKERB proxy all information sent in
@@ -434,8 +437,8 @@
           to relay the ticket requests and responses, the client's identity
           could be revealed in the client-server traffic where the same identity
           could have been concealed if IAKERB were not used.
-          Hence, to complicate traffic analysis and provide privacy for the IAKERB client, 
-          the IAKERB client SHOULD request the anonymous Kerberos FAST option <xref target="RFC6113"/>.
+          Hence, to complicate traffic analysis and provide privacy for the client, 
+          the client SHOULD request the anonymous Kerberos FAST option <xref target="RFC6113"/>.
         </t>
 
         <t>
