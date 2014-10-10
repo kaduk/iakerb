@@ -90,8 +90,8 @@
       <t>
         This document defines extensions to the Kerberos protocol and
         the GSS-API Kerberos mechanism that enable a GSS-API Kerberos
-        client to exchange messages with the KDC using the GSS-API
-        acceptor as a proxy, by encapsulating the Kerberos messages
+        client to exchange messages with the KDC by using the GSS-API
+        acceptor as a proxy, encapsulating the Kerberos messages
         inside GSS-API tokens.  With these extensions a client can
         obtain Kerberos tickets for services where the KDC is not
         accessible to the client, but is accessible to the application
@@ -116,8 +116,8 @@
           does not have an IP address, or the access point packet
           filter does not allow the client to send packets to the
           Internet before it authenticates to the access point.  The
-          Initial and Pass Through Authentication Using Kerberos
-          mechanism (IAKERB) allows for the use of Kerberos in such
+          Initial and Pass Through Authentication Using Kerberos (IAKERB)
+          mechanism allows for the use of Kerberos in such
           scenarios where the client is unable to directly contact the
           KDC, by using the service to pass messages between the
           client and the KDC.  This allows the client to obtain tickts
@@ -152,12 +152,13 @@
           transitioning to normal <xref target="RFC4121" /> GSS-krb5
           messages once the client has obtained the necessary
           credentials.
-
-          The GSS-API acceptor, when relaying the Kerberos messages,
-          is called an IAKERB proxy.
-
           Consequently, IAKERB as defined in this document requires
           the use of GSS-API.
+        </t>
+
+        <t>
+          The GSS-API acceptor, when relaying these Kerberos messages,
+          is called an IAKERB proxy.
         </t>
 
       </section>
