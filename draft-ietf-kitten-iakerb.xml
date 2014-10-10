@@ -150,7 +150,7 @@
           messages once the client has obtained the necessary
           credentials.
           Consequently, IAKERB as defined in this document requires
-          the use of GSS-API.
+          the use of the GSS-API.
         </t>
 
         <t>
@@ -192,7 +192,7 @@
           token framing described in section 4.1 of
           <xref target="RFC4121"/> with the mechanism OID being
           id-kerberos-iakerb.  MIT implemented an earlier draft of
-          this specification; details on how to inter operate with
+          this specification; details on how to interoperate with
           that implementation can be found in
           <xref target="MITVersion"/>.
         </t>
@@ -203,12 +203,13 @@
           the KDC directly, the client encapsulates the
           request message into the output token of the
           GSS_Init_security_context() call and returns
-          GSS_S_CONTINUE_NEEDED <xref target="RFC2743"/> indicating
+          GSS_S_CONTINUE_NEEDED <xref target="RFC2743"/>, indicating
           that at least one more token is required in order to
-          establish the context. The output token is then passed for
+          establish the context. The output token is then passed over
+          the application protocol for
           use as the input token to the GSS_Accept_sec_context() call
           in accordance with GSS-API. The GSS-API acceptor extracts
-          the Kerberos request in the input token, locates the target
+          the Kerberos request from the input token, locates the target
           KDC, and sends the request on behalf of the client.  After
           receiving the KDC reply, the GSS-API acceptor then
           encapsulates the reply message into the output token of
@@ -216,7 +217,7 @@
           GSS_S_CONTINUE_NEEDED <xref target="RFC2743"/> indicating
           that at least one more token is required in order to
           establish the context. The output token is passed to the
-          initiator in accordance with GSS-API.
+          initiator over the application protocol in accordance with GSS-API.
         </t>
 
         <figure>
