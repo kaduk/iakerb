@@ -268,6 +268,8 @@
           <artwork>
 
         IAKERB-HEADER ::= SEQUENCE {
+            -- Yes, the tags start at 1, not 0, which would be
+            -- more conventional for Kerberos.
             target-realm      [1] UTF8String,
                -- The name of the target realm.
             cookie            [2] OCTET STRING OPTIONAL,
@@ -291,29 +293,26 @@
           The client fills out the IAKERB-HEADER structure as follows:
           the target-realm contains the realm name the ticket request
           is addressed to. In the initial message from the client, the
-          cookie field is absent.  The client MUST specify a
-          target-realm.  If the client does not know the realm of the
-          client's true principal name <xref target="RFC6806"/>, it
-          MUST specify a realm it knows.  This can be the realm of the
+          cookie field is absent.  The client MAY send a completely
+          empty IAKERB_PROXY message (consisting solely of the octets
+          05 01 and an IAKERB_HEADER with zero-length target-realm) in
+          order to query the Kerberos realm of the acceptor, see
+          <xref target="enterprise" />.  In all other cases, the client MUST
+          specify a target-realm.  This can be the realm of the client's
+          host, if no other realm information is available.
           client's host.
-          <!--
-              The GSS-API initiator can retrieve the default realm of the
-              GSS-API acceptor by sending an IAKERB message with an empty
-              target-realm in the IAKERB-HEADER
-              and no Kerberos message following the IAKERB-HEADER struture.
-              The GSS-API acceptor fills out the traget realm field using the
-              default realm (which could be the realm of the server host),
-              and sends back the IAKERB message with no Kerberos message
-              following the header. The GSS-API initiator can use the
-              returned realm in subsequent IAKERB messages. -->
-
         </t>
 
         <t>
           Upon receipt of the IAKERB_PROXY message, the GSS-API
           acceptor inspects the target-realm field in the
-          IAKERB_HEADER, and locates a KDC of that realm, and sends
-          the ticket request to that KDC.
+          IAKERB_HEADER, locates a KDC for that realm, and sends
+          the ticket request to that KDC.  The IAKERB proxy MAY
+          engage in fallback behavior, retransmitting packets to
+          a given KDC and/or sending the request to other KDCs in
+          that realm if the initial transmission does not receive a
+          reply, as would be done if the proxy was making requests
+          on its own behalf.
         </t>
         <t>
           The GSS-API acceptor encapsulates the KDC reply message in
@@ -340,8 +339,9 @@
         </figure>
 
         <t>
-          When the GSS-API acceptor has an IP address for a KDC in the
-          client realm, but does not receive a response from any KDC
+          When the GSS-API acceptor has an IP address for at least one
+          KDC in the
+          target realm, but does not receive a response from any KDC
           in the realm (including in response to retries), it sends a
           KRB_ERROR message with the code
           KRB_AP_ERR_IAKERB_KDC_NO_RESPONSE to the client and the
@@ -363,46 +363,24 @@
           state information kept by the GSS-API acceptor.
 
           The content and the encoding of the cookie field is a local
-          matter of the IAKERB proxy. The client MUST copy the cookie
-          verbatim from the previous server response whenever the
-          cookie is present into the subsequent tokens that contains
-          an IAKERB_PROXY message.
+          matter of the IAKERB proxy.  Whenever the cookie is present
+          in a token received by the initiator, the initiator MUST copy
+          the cookie verbatim into its subsequent response tokens which
+          contain IAKERB_PROXY messages.
         </t>
 
         <t>
           The client and the server can repeat the sequence of sending
-          and receiving the IAKERB messages as described above, in
-          order to allow the client interact with the KDC through the
-          IAKERB proxy, and to obtain Kerberos tickets as needed.
+          and receiving the IAKERB messages as described above for an
+          arbitrary number of message exchanges, in
+          order to allow the client to interact with the KDC through the
+          IAKERB proxy, and to obtain Kerberos tickets as needed
+          to authenticate to the acceptor.
         </t>
 
         <t>
-          When obtaining the initial TGT, the client may start with an
-          NT-ENTERPRISE name type and no Kerberos realm information.
-          A Kerberos client not using IAKERB would typically resolve
-          the NT-ENTERPRISE name to a principal name by starting from
-          the realm of the client's host and finding out the true
-          realm of the enterprise principal based on referrals
-          <xref target="RFC6806"/>.  When the client does not have any
-          realm information, it
-          can retrieve the realm of the GSS-API acceptor as follows:
-          the client returns GSS_S_CONTINUE_NEEDED with the output
-          token containing an IAKERB message with an empty
-          target-realm in the IAKERB-HEADER and no Kerberos message
-          following the IAKERB-HEADER structure. Upon receipt of the
-          realm request, the GSS-API acceptor fills out the target
-          realm field using the realm of the server, and returns
-          GSS_S_CONTINUE_NEEDED with the output token containing the
-          IAKERB message with the server's realm and no Kerberos
-          message following the IAKERB-HEADER header. The GSS-API
-          initiator can then use the returned realm in subsequent
-          IAKERB messages to resolve the NT-ENTERPRISE name
-          type. Since the GSS-API acceptor can act as a Kerberos
-          acceptor, it always has a Kerberos realm in this case.
-        </t>
-
-        <t>
-          When the client obtained a service ticket, subsequent
+          Once the client has obtained the service ticket needed to
+          authenticate to the acceptor, subsequent
           GSS-API context tokens are of type KRB_AP_REQ, not
           IAKERB_PROXY, and the client performs the
           client-server application exchange as defined in
@@ -414,9 +392,9 @@
           the authenticator subkey and the GSS_EXTS_FINISHED extension
           as defined in <xref target="FinishMessage"/> MUST be present
           in the AP-REQ authenticator.  This checksum provides
-          integrity protection for the messages exchanged including
-          the unauthenticated clear texts in the IAKERB-HEADER
-          structure.
+          integrity protection for the IAKERB messages previously
+          exchanged, including the unauthenticated clear texts in the
+          IAKERB-HEADER structure.
         </t>
 
 
@@ -430,6 +408,44 @@
           client to complicate traffic analysis.
         </t>
 
+        <section anchor="enterprise" title="Enterprise principal names">
+          <t>
+            The introduction of principal name canonicalization by
+            <xref target="RFC6806" /> created the possibility for a
+            client to have a principal name (of type NT-ENTERPRISE)
+            for which it is trying to obtain credentials, but no
+            information about what realm's KDC to contact to obtain
+            those credentials.
+            A Kerberos client not using IAKERB would typically resolve
+            the NT-ENTERPRISE name to a principal name by starting from
+            the realm of the client's host and finding out the true
+            realm of the enterprise principal based on referrals
+            <xref target="RFC6806"/>.
+          </t>
+
+          <t>
+            A client using IAKERB may not have any realm information,
+            even for the realm of the client's host, or may know that
+            the client host's realm is not appropriate for a given
+            enterprise principal name.  In such cases, the client
+            can retrieve the realm of the GSS-API acceptor as follows:
+            the client returns GSS_S_CONTINUE_NEEDED with the output
+            token containing an IAKERB message with an empty
+            target-realm in the IAKERB-HEADER and no Kerberos message
+            following the IAKERB-HEADER structure. Upon receipt of the
+            realm request, the GSS-API acceptor fills out an IAKERB_PROXY
+            response message, filling the target-realm field with the
+            realm of the acceptor, and returns
+            GSS_S_CONTINUE_NEEDED with the output token containing the
+            IAKERB message with the server's realm and no Kerberos
+            message following the IAKERB-HEADER header. The GSS-API
+            initiator can then use the returned realm in subsequent
+            IAKERB messages to resolve the NT-ENTERPRISE name
+            type. Since the GSS-API acceptor can act as a Kerberos
+            acceptor, it always has an associated Kerberos realm.
+          </t>
+        </section>
+
       </section>
 
       <section title="Finish Message" anchor="FinishMessage">
@@ -438,8 +454,8 @@
           authenticator subkey in the AP-REQ MUST alway be present,
           and the Exts field in the GSS-API authenticator
           <xref target="RFC6542"/>
-          MUST contain an extension of the type GSS_EXTS_FINISHED and
-          the extension data contains the ASN.1 DER encoding of the
+          MUST contain an extension of type GSS_EXTS_FINISHED with
+          extension data containing the ASN.1 DER encoding of the
           structure KRB-FINISHED.
         </t>
 
@@ -449,11 +465,14 @@
          --- Data type for the IAKERB checksum.
 
     KRB-FINISHED ::= {
+         -- Yes, the tags start at 1, not 0, which would be
+         -- more conventional for Kerberos.
          gss-mic [1] Checksum,
              -- Contains the checksum [RFC3961] of the GSS-API tokens
              -- exchanged between the initiator and the acceptor, 
              -- and prior to the containing AP_REQ GSS-API token.
              -- The checksum is performed over the GSS-API tokens
+             -- exactly as they were transmitted and received,
              -- in the order that the tokens were sent.
           ...
     }
@@ -464,7 +483,8 @@
           The gss-mic field in the KRB-FINISHED structure contains a
           Kerberos checksum <xref target="RFC3961"/> of all the
           preceding context tokens of this GSS-API context (including
-          the InitialContextToken header), concatenated in
+          the generic token framing of the GSSAPI-Token type from
+          <xref target="RFC4121" />), concatenated in
           chronological order (note that GSS-API context token
           exchanges are synchronous).  The checksum type is the
           required checksum type of the enctype of the subkey in the
