@@ -572,7 +572,7 @@
           the KDC, IAKERB is being used, and an external attacker can
           modify DNS responses to the IAKERB proxy, there are several
           countermeasures to prevent arbitrary messages from being
-          sent to internal servers:<vspace blankLines="1"/>
+          sent to internal servers:
 
           <list style="numbers"><t> KDC port numbers can be statically
             configured on the IAKERB proxy. In this case, the messages
@@ -580,13 +580,13 @@
             runs KDC's on a static port (usually port 88) and does not
             run any other servers on the same port, this
             countermeasure would be easy to administer and should be
-            effective.<vspace blankLines="1"/>
+            effective.
           </t>
 
           <t>
             The proxy can do application level sanity checking and
             filtering.  This countermeasure should eliminate many of
-            the above attacks.<vspace blankLines="1"/>
+            the above attacks.
           </t>
 
           <t>
