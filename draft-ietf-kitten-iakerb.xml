@@ -642,6 +642,26 @@
 
       </section>
 
+      <section title="Assigned Numbers">
+
+        <t>
+          The value for the error code KRB_AP_ERR_IAKERB_KDC_NOT_FOUND is 85.
+        </t>
+
+        <t>
+          The value for the error code KRB_AP_ERR_IAKERB_KDC_NO_RESPONSE is 86.
+        </t>
+
+        <t>
+          The key usage number KEY_USAGE_FINISHED is 41.
+        </t>
+
+        <t>
+          The key usage number KEY_USAGE_IAKERB_FINISHED is 42.
+        </t>
+
+      </section>
+
       <section title="IANA Considerations">
 
         <t>IANA is requested to make a modification in the "Kerberos
