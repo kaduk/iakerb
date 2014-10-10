@@ -535,39 +535,42 @@
           involves the client obtaining a service ticket for the
           service operating the proxy, which will receive the client
           principal as part of normal authentication, this is also not
-          a serious concern.  However, a typical IAKERB client sends
+          a serious concern.  However, an IAKERB client not using
+          an armored FAST channel <xref target="RFC6113" /> sends
           an AS_REQ with pre-authentication data encrypted in the
-          long-term keys of the user, even before the server is
+          long-term keys of the user, even before the acceptor is
           authenticated.  This subjects the user's long-term key to an
           offline attack by the proxy.  To mitigate this threat, the
-          client SHOULD use Kerberos FAST<xref target="RFC6113"/> and
-          require KDC authentication to protect the user's
+          client SHOULD use FAST <xref target="RFC6113"/> and
+          its KDC authentication facility to protect the user's
           credentials.
         </t>
 
 
         <t>
-          The client name is in clear text in the authentication
-          exchange messages and ticket granting service exchanges
-          according to <xref target="RFC4120"/> whereas the client
-          name is encrypted in client- server application exchange
-          messages.  By using the IAKERB proxy to relay the ticket
-          requests and responses, the client's identity could be
-          revealed in the client-server traffic where the same
-          identity could have been concealed if IAKERB were not used.
-          Hence, to complicate traffic analysis and provide privacy
-          for the client, the client SHOULD request the anonymous
-          Kerberos FAST option <xref target="RFC6113"/>.
+          Similarly, the client principal name is in cleartext in the
+          AS and TGS exchanges, whereas in the AP exchanges embedded
+          in GSS context tokens for the regular krb5 mechanism,
+          the client principal name is present only in encrypted form.
+          Thus, more information is exposed over the network path
+          between initiator and acceptor when IAKERB is used than
+          when the krb5 mechanism is used, unless FAST armor is
+          employed.  (This information would
+          be exposed in other traffic from the initiator when the
+          krb5 mech is used.)  As such, to complicate traffic analysis
+          and provide privacy for the client, the client SHOULD
+          request the anonymous Kerberos FAST option <xref target="RFC6113"/>.
         </t>
 
         <t>
           Similar to other network access protocols, IAKERB allows an
           unauthenticated client (possibly outside the security
           perimeter of an organization) to send messages that are
-          proxied to interior servers.  To reduce the attack surface,
+          proxied to servers inside the perimeter.
+          To reduce the attack surface,
           firewall filters can be applied to restrict from which hosts
-          the client requests can be proxied and the proxy can further
-          restrict the set of realms to which the requests can be
+          client requests can be proxied, and the proxy can further
+          restrict the set of realms to which requests can be
           proxied.
 
         </t>
