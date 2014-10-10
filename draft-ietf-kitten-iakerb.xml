@@ -519,8 +519,7 @@
           authentication for a dial-up client, the client machine may
           not yet possess a network address. Hence, as allowed by
           <xref target="RFC4120"/>, the addresses field of the AS-REQ
-          and TGS-REQ requests SHOULD be blank and the caddr field of
-          the ticket SHOULD similarly be left blank.
+          and TGS-REQ requests SHOULD be blank.
         </t>
       </section>
 
