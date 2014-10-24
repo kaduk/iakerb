@@ -117,7 +117,7 @@
           mechanism allows for the use of Kerberos in such
           scenarios where the client is unable to directly contact the
           KDC, by using the service to pass messages between the
-          client and the KDC.  This allows the client to obtain tickts
+          client and the KDC.  This allows the client to obtain tickets
           from the KDC and present them to the service, as in normal
           Kerberos operation.
         </t>
@@ -268,8 +268,8 @@
           <artwork>
 
         IAKERB-HEADER ::= SEQUENCE {
-            -- Yes, the tags start at 1, not 0, which would be
-            -- more conventional for Kerberos.
+            -- Note that the tag numbers start at 1, not 0, which would
+            -- be more conventional for Kerberos.
             target-realm      [1] UTF8String,
                -- The name of the target realm.
             cookie            [2] OCTET STRING OPTIONAL,
@@ -465,7 +465,7 @@
          --- Data type for the IAKERB checksum.
 
     KRB-FINISHED ::= {
-         -- Yes, the tags start at 1, not 0, which would be
+         -- Note that the tag numbers start at 1, not 0, which would be
          -- more conventional for Kerberos.
          gss-mic [1] Checksum,
              -- Contains the checksum [RFC3961] of the GSS-API tokens
